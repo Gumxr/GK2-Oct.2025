@@ -15,7 +15,7 @@ import MapScreen from './screens/SportFritid/MapScreen';
 import { BookingsProvider } from './store/bookings';
 import { FiltersProvider } from './store/filters';
 
-//node
+//nide
 const Root = createNativeStackNavigator();
 const Stack = createNativeStackNavigator();
 
