@@ -205,7 +205,7 @@ export const g = StyleSheet.create({
     borderTopColor: colors.border,
     paddingTop: 10,
     paddingBottom: 12,
-    backgroundColor: colors.bg,
+    backgroundColor: colors.border,
   },
   progressRow: {
     flexDirection: 'row',

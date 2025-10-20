@@ -3,54 +3,52 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { g, colors } from '../styles/styles';
 
-const STEPS = ['Sport', 'Venue', 'Book'];
+function Step({ index, label, state }) {
+  const circleStyle = [
+    g.stepCircle,
+    state === 'active' && g.stepCircleActive,
+    state === 'done' && g.stepCircleDone,
+  ];
 
-function currentIndexFromProp(current) {
-  if (typeof current === 'number') return Math.min(Math.max(current, 0), STEPS.length - 1);
-  const map = { sport: 0, venue: 1, book: 2 };
-  return map[String(current || '').toLowerCase()] ?? 0;
+  const labelStyle = [
+    g.stepLabel,
+    state === 'active' && g.stepLabelActive,
+    state === 'done' && g.stepLabelDone,
+  ];
+
+  // Gør tallet tydeligt i alle tilstande
+  const numberStyle = [
+    g.stepNumber,
+    state === 'idle' && { color: colors.textMuted },     // grå på mørk baggrund
+    state === 'active' && { color: '#065f46' },          // mørkegrøn på lys grøn cirkel
+    state === 'done' && { color: colors.textInverse },   // hvid på grøn cirkel
+  ];
+
+  return (
+    <View style={g.stepItem}>
+      <View style={circleStyle}>
+        <Text style={numberStyle}>{index}</Text>
+      </View>
+      <Text style={labelStyle}>{label}</Text>
+    </View>
+  );
 }
 
 export default function ProgressSteps({ current = 'sport', style }) {
-  const idx = currentIndexFromProp(current);
+  // Beregn tilstande for hvert trin
+  const states = { sport: 'idle', venue: 'idle', book: 'idle' };
+  if (current === 'sport') states.sport = 'active';
+  if (current === 'venue') { states.sport = 'done'; states.venue = 'active'; }
+  if (current === 'book')  { states.sport = 'done'; states.venue = 'done'; states.book = 'active'; }
 
   return (
-    <View style={[g.progressWrap, style]}>
+    <View style={[g.progressTop, style]}>
       <View style={g.progressRow}>
-        {STEPS.map((label, i) => {
-          const status = i < idx ? 'done' : i === idx ? 'active' : 'todo';
-          const circleStyle = [
-            g.stepCircle,
-            status === 'active' && g.stepCircleActive,
-            status === 'done' && g.stepCircleDone,
-          ];
-          const labelStyle = [
-            g.stepLabel,
-            status === 'active' && g.stepLabelActive,
-            status === 'done' && g.stepLabelDone,
-          ];
-
-          return (
-            <View key={label} style={g.stepItem}>
-              <View style={circleStyle}>
-                <Text style={g.stepNumber}>
-                  {status === 'done' ? '✓' : i + 1}
-                </Text>
-              </View>
-              <Text style={labelStyle}>{label}</Text>
-
-              {/* connector (ikke efter sidste) */}
-              {i < STEPS.length - 1 && (
-                <View
-                  style={[
-                    g.connector,
-                    (status === 'done' || (status === 'active' && idx > i)) && g.connectorActive,
-                  ]}
-                />
-              )}
-            </View>
-          );
-        })}
+        <Step index={1} label="Sport" state={states.sport} />
+        <View style={[g.connector, (current !== 'sport') && g.connectorActive]} />
+        <Step index={2} label="Venue" state={states.venue} />
+        <View style={[g.connector, (current === 'book') && g.connectorActive]} />
+        <Step index={3} label="Book" state={states.book} />
       </View>
     </View>
   );

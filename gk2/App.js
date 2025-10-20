@@ -16,7 +16,6 @@ import { BookingsProvider } from './store/bookings';
 import { FiltersProvider } from './store/filters';
 
 
-
 const Root = createNativeStackNavigator();
 const Stack = createNativeStackNavigator();
 
